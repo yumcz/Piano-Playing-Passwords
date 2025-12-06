@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MIDI Note Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #eee;
+      padding: 40px;
+    }
+    h1 { color: #0f0; }
+    #log {
+      white-space: pre-wrap;
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      min-height: 200px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>MIDI Note Viewer</h1>
+<p>Plug in your MIDI keyboard and press keys. Notes will appear below.</p>
+<div id="status">Initializing MIDI...</div>
+<div id="log"></div>
+
+<script>
+const logBox = document.getElementById("log");
+const statusBox = document.getElementById("status");
+
+function log(msg) {
+  logBox.textContent += msg + "\n";
+}
+
+async function initMIDI() {
+  try {
+    const access = await navigator.requestMIDIAccess();
+    statusBox.textContent = "MIDI ready! Play your keyboard.";
+
+    // Listen to all MIDI inputs
+    for (let input of access.inputs.values()) {
+      log("Connected to: " + input.name);
+
+      input.onmidimessage = (msg) => {
+        const [command, note, velocity] = msg.data;
+
+        const NOTE_ON = (command === 0x90 && velocity > 0);
+        const NOTE_OFF = (command === 0x80) || (command === 0x90 && velocity === 0);
+
+        if (NOTE_ON) {
+          log(`Note ON: ${note}`);
+        } else if (NOTE_OFF) {
+          log(`Note OFF: ${note}`);
+        }
+      };
+    }
+
+  } catch (err) {
+    statusBox.textContent = "Failed to access MIDI.";
+    log(err);
+  }
+}
+
+initMIDI();
+</script>
+
+</body>
+</html>
