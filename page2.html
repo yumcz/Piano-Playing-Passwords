@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MIDI Pattern Checker</title>
+  <style>
+    body { font-family: Arial; background:#111; color:#eee; padding:40px; }
+    h1 { color:#0f0; }
+    #log { white-space: pre-wrap; background:#222; padding:20px; border-radius:10px; min-height:200px; }
+  </style>
+</head>
+<body>
+<h1>MIDI Pattern Checker</h1>
+<p>Play the pattern. Wrong note will restart sequence.</p>
+<div id="status">Initializing MIDI...</div>
+<div id="log"></div>
+
+<script>
+const logBox = document.getElementById("log");
+const statusBox = document.getElementById("status");
+
+function log(msg) {
+  logBox.textContent += msg + "\n";
+  logBox.scrollTop = logBox.scrollHeight;
+}
+
+// Define your pattern sequence
+const SEQUENCE = [
+  [55, 60, 64, 72], [67], [48, 74], [72], 
+  [56, 60, 64, 72], [71], [48], [67],
+  [57, 60, 64, 69], [67], [48, 74], [72],
+  [55, 62, 67, 72], [71], [48, 72], [74],
+  [57, 60, 65, 76], [67], [48, 74], [72],
+  [55, 72, 64, 72], [67], [48], [72],
+  [57, 60, 65, 76], [67], [48, 74], [72],
+  [59, 62, 67], [67], [55, 59, 62, 71], [72],
+  [55, 60, 64, 72], [67], [48, 74], [72], 
+  [56, 60, 64, 72], [71], [48], [67],
+  [57, 60, 64, 69], [67], [48, 74], [72],
+  [55, 62, 67, 72], [71], [48, 72], [74],
+  [53, 60, 69, 76], [67], [48, 72], [67],
+  [53, 56, 68, 76], [60, 65], [67, 72], [74],
+  [60, 64, 67, 72]
+];
+
+let sequenceIndex = 0;
+let currentStepPressed = new Set();
+const CHECKPOINT_SIZE = 4;
+let lastCheckpoint = 0;
+
+async function initMIDI() {
+  try {
+    const access = await navigator.requestMIDIAccess();
+    statusBox.textContent = "MIDI ready! Play your keyboard.";
+    
+    for (let input of access.inputs.values()) {
+      log("Connected to: " + input.name);
+      input.onmidimessage = handleMIDIMessage;
+    }
+  } catch (err) {
+    statusBox.textContent = "Failed to access MIDI.";
+    log(err);
+  }
+}
+
+function handleMIDIMessage(msg) {
+  const [command, note, velocity] = msg.data;
+  const NOTE_ON = (command === 0x90 && velocity > 0);
+
+  if (!NOTE_ON) return;
+
+  const expected = SEQUENCE[sequenceIndex];
+
+  if (!expected.includes(note)) {
+    log("Wrong note! Restarting.");
+    sequenceIndex = 0;
+    currentStepPressed.clear();
+    lastCheckpoint = 0;
+    return;
+  }
+
+  currentStepPressed.add(note);
+
+  // Check if step is completed
+  if (expected.every(n => currentStepPressed.has(n))) {
+    sequenceIndex++;
+    currentStepPressed.clear();
+
+    // Checkpoint logic
+    const checkpointNumber = Math.floor(sequenceIndex / CHECKPOINT_SIZE);
+    if (checkpointNumber > lastCheckpoint) {
+      log(`Checkpoint ${checkpointNumber} reached.`);
+      lastCheckpoint = checkpointNumber;
+    }
+
+    if (sequenceIndex >= SEQUENCE.length) {
+      log("FULL PATTERN COMPLETED!");
+      sequenceIndex = 0; // Optional: reset after completion
+    }
+  }
+}
+
+initMIDI();
+</script>
+</body>
+</html>
