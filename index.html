@@ -8,20 +8,15 @@
   <meta charset="UTF-8">
   <title>MIDI Note Viewer</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #eee;
-      padding: 40px;
-    }
-    h1 { color: #0f0; }
-    #log {
-      white-space: pre-wrap;
-      background: #222;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
-      min-height: 200px;
+    body { font-family: Arial; background:#111; color:#eee; padding:40px; }
+    h1 { color:#0f0; }
+    #log { 
+      white-space: pre-wrap; 
+      background:#222; 
+      padding:20px; 
+      border-radius:10px; 
+      height: 400px;       /* fixed height */
+      overflow-y: auto;    /* internal scroll */
     }
   </style>
 </head>
@@ -74,6 +69,7 @@ initMIDI();
 
 </body>
 </html>
+
 
 
 
