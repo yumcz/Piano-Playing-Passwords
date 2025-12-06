@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<nav>
-  <a href="index.html">MIDI Note Viewer</a> |
-  <a href="page2.html">Pattern Checker</a>
-</nav>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -18,9 +14,16 @@
       height: 400px;       /* fixed height */
       overflow-y: auto;    /* internal scroll */
     }
+    nav a { color: #0f0; text-decoration: none; margin-right: 15px; }
+    nav a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
+
+<nav>
+  <a href="index.html">MIDI Note Viewer</a> |
+  <a href="page2.html">Pattern Checker</a>
+</nav>
 
 <h1>MIDI Note Viewer</h1>
 <p>Plug in your MIDI keyboard and press keys. Notes will appear below.</p>
@@ -31,8 +34,10 @@
 const logBox = document.getElementById("log");
 const statusBox = document.getElementById("status");
 
+// Updated log function: auto-scrolls to latest input
 function log(msg) {
   logBox.textContent += msg + "\n";
+  logBox.scrollTop = logBox.scrollHeight; // auto-scroll to bottom
 }
 
 async function initMIDI() {
@@ -40,13 +45,11 @@ async function initMIDI() {
     const access = await navigator.requestMIDIAccess();
     statusBox.textContent = "MIDI ready! Play your keyboard.";
 
-    // Listen to all MIDI inputs
     for (let input of access.inputs.values()) {
       log("Connected to: " + input.name);
 
       input.onmidimessage = (msg) => {
         const [command, note, velocity] = msg.data;
-
         const NOTE_ON = (command === 0x90 && velocity > 0);
         const NOTE_OFF = (command === 0x80) || (command === 0x90 && velocity === 0);
 
@@ -69,7 +72,3 @@ initMIDI();
 
 </body>
 </html>
-
-
-
-
