@@ -10,8 +10,16 @@
   <style>
     body { font-family: Arial; background:#111; color:#eee; padding:40px; }
     h1 { color:#0f0; }
-    #log { white-space: pre-wrap; background:#222; padding:20px; border-radius:10px; min-height:200px; }
+    #log { 
+      white-space: pre-wrap; 
+      background:#222; 
+      padding:20px; 
+      border-radius:10px; 
+      height: 400px;       /* fixed height */
+      overflow-y: auto;    /* internal scroll */
+    }
   </style>
+
 </head>
 <body>
 <h1>MIDI Pattern Checker</h1>
@@ -108,4 +116,5 @@ initMIDI();
 </script>
 </body>
 </html>
+
 
