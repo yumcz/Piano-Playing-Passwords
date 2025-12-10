@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<nav>
-  <a href="index.html">MIDI Note Viewer</a> |
-  <a href="page2.html">Pattern Checker</a>  |
-  <a href="page3.html">Custom Pattern Checker</a>  |
-</nav>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -16,13 +11,21 @@
       background:#222; 
       padding:20px; 
       border-radius:10px; 
-      height: 400px;       /* fixed height */
-      overflow-y: auto;    /* internal scroll */
+      height: 400px;
+      overflow-y: auto;
     }
+    nav a { color: #0f0; text-decoration: none; margin-right: 15px; }
+    nav a:hover { text-decoration: underline; }
   </style>
-
 </head>
 <body>
+
+<nav>
+  <a href="index.html">MIDI Note Viewer</a> |
+  <a href="page2.html">Pattern Checker</a> |
+  <a href="page3.html">Custom Pattern Checker</a> |
+</nav>
+
 <h1>MIDI Pattern Checker</h1>
 <p>Play the pattern. Wrong note will restart sequence.</p>
 <div id="status">Initializing MIDI...</div>
@@ -37,7 +40,7 @@ function log(msg) {
   logBox.scrollTop = logBox.scrollHeight;
 }
 
-// Define your pattern sequence
+// Pattern Sequence
 const SEQUENCE = [
   [55, 60, 64, 72], [67], [48, 74], [72], 
   [56, 60, 64, 72], [71], [48], [67],
@@ -65,7 +68,7 @@ async function initMIDI() {
   try {
     const access = await navigator.requestMIDIAccess();
     statusBox.textContent = "MIDI ready! Play your keyboard.";
-    
+
     for (let input of access.inputs.values()) {
       log("Connected to: " + input.name);
       input.onmidimessage = handleMIDIMessage;
@@ -94,13 +97,12 @@ function handleMIDIMessage(msg) {
 
   currentStepPressed.add(note);
 
-  // Check if step is completed
   if (expected.every(n => currentStepPressed.has(n))) {
     sequenceIndex++;
     currentStepPressed.clear();
 
-    // Checkpoint logic
     const checkpointNumber = Math.floor(sequenceIndex / CHECKPOINT_SIZE);
+
     if (checkpointNumber > lastCheckpoint) {
       log(`Checkpoint ${checkpointNumber} reached.`);
       lastCheckpoint = checkpointNumber;
@@ -108,17 +110,13 @@ function handleMIDIMessage(msg) {
 
     if (sequenceIndex >= SEQUENCE.length) {
       log("FULL PATTERN COMPLETED!");
-      sequenceIndex = 0; // Optional: reset after completion
+      sequenceIndex = 0;
     }
   }
 }
 
 initMIDI();
 </script>
+
 </body>
 </html>
-
-
-
-
-
