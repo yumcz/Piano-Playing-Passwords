@@ -69,7 +69,7 @@ let lastCheckpoint = 0;
 async function initMIDI() {
   try {
     const access = await navigator.requestMIDIAccess();
-    statusBox.textContent = "MIDI ready! Play your keyboard.";
+    statusBox.textContent = "MIDI ready! Connect your keyboard.";
 
     for (let input of access.inputs.values()) {
       log("Connected to: " + input.name);
@@ -122,5 +122,6 @@ initMIDI();
 
 </body>
 </html>
+
 
 
