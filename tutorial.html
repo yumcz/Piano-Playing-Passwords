@@ -6,27 +6,39 @@
   <style>
     body { font-family: Arial; background:#111; color:#eee; padding:40px; }
     h1 { color:#0f0; }
-    .video-container {
+    nav a { color: #0f0; text-decoration: none; margin-right: 15px; }
+    nav a:hover { text-decoration: underline; }
+
+    .video-box {
       background:#222;
       padding:20px;
       border-radius:10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      margin-top:20px;
+      display:flex;
+      justify-content:center;
     }
+
     video {
-      width: 100%;
-      max-width: 800px;
-      border-radius: 10px;
+      width:100%;
+      max-width:800px;
+      border-radius:10px;
     }
   </style>
 </head>
 <body>
 
+<nav>
+  <a href="index.html">MIDI Note Viewer</a> |
+  <a href="page2.html">Pattern Checker</a> |
+  <a href="page3.html">Custom Pattern Checker</a> |
+  <a href="references.html">References</a> |
+  <a href="tutorial.html">Tutorial</a> |
+</nav>
+
 <h1>Tutorial</h1>
 
-<div class="video-container">
-  <!-- Replace with your own video file or embed -->
+<div class="video-box">
+  <!-- Insert your video file here -->
   <video controls>
     <source src="your-video.mp4" type="video/mp4">
     Your browser does not support the video tag.
