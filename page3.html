@@ -70,7 +70,7 @@ function parseSequence(input) {
 async function initMIDI() {
   try {
     const access = await navigator.requestMIDIAccess();
-    statusBox.textContent = "MIDI ready! Play your keyboard.";
+    statusBox.textContent = "MIDI ready! Connect your keyboard.";
 
     for (let input of access.inputs.values()) {
       log("Connected to: " + input.name);
@@ -129,7 +129,7 @@ startBtn.addEventListener("click", () => {
   sequenceIndex = 0;
   currentStepPressed.clear();
   lastCheckpoint = 0;
-  statusBox.textContent = "Sequence loaded! Play your keyboard.";
+  statusBox.textContent = "Sequence loaded! Connect your keyboard.";
 });
 
 initMIDI();
@@ -137,6 +137,7 @@ initMIDI();
 
 </body>
 </html>
+
 
 
 
